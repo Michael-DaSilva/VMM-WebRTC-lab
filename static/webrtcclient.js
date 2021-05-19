@@ -34,14 +34,19 @@ async function call() {
 // use getUserMedia or displayMedia (share screen). 
 // Then show it on localVideo.
 async function enable_camera() {
-
-  // *** TODO ***: define constraints: set video to true, audio to false
+  const constraints = {video: true, audio: false};
+  var stream = null;
   
-  // *** TODO ***: uncomment the following log message
   console.log('Getting user media with constraints', constraints);
 
-  // *** TODO ***: use getUserMedia to get a local media stream from the camera.
-  //               If this fails, use getDisplayMedia to get a screen sharing stream.
+  try {
+    stream = await navigator.mediaDevices.getUserMedia(constraints);
+    console.log('Got MediamStream:', stream);
+  } catch(error){
+    console.error('Error accessing media devices.', error);
+    stream = await navigator.mediaDevices.getDisplayMedia(constraints);
+    console.log('Got DisplayStream:', stream);
+  }
 
   document.getElementById('localVideo').srcObject = stream;
   return stream;
