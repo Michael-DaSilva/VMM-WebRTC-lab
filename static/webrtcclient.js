@@ -59,9 +59,7 @@ async function enable_camera() {
 // --------------------------------------------------------------------------
 // Create a Socket.io connection with the Web server for signaling
 function create_signaling_connection() {
-  // *** TODO ***: create a socket by simply calling the io() function
-  //               provided by the socket.io library (included in index.html).
-  // var socket = ...
+  var socket = io()
   return socket;
 }
 
