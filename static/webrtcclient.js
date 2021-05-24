@@ -193,8 +193,7 @@ async function handle_local_icecandidate(event) {
 // The peer has sent a remote ICE candidate. Add it to the PeerConnection.
 async function handle_remote_icecandidate(candidate) {
   console.log('Received remote ICE candidate: ', candidate);
-  // *** TODO ***: add the received remote ICE candidate to the peerConnection 
-
+  await peerConnection.addIceCandidate(candidate);
 }
 
 // ==========================================================================
