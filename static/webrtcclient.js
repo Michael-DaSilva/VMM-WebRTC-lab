@@ -59,7 +59,7 @@ async function enable_camera() {
 // --------------------------------------------------------------------------
 // Create a Socket.io connection with the Web server for signaling
 function create_signaling_connection() {
-  var socket = io()
+  var socket = io();
   return socket;
 }
 
@@ -68,20 +68,40 @@ function create_signaling_connection() {
 function add_signaling_handlers(socket) {
   // Event handlers for joining a room. Just print console messages
   // --------------------------------------------------------------
-  // *** TODO ***: use the 'socket.on' method to create handlers for the 
-  //               messages 'created', 'joined', 'full'.
-  //               For all three messages, simply write a console log.
+  socket.on('created', (room) => {
+    console.log("Room " + room + " created.");
+  })
 
+  socket.on('joined', (room) => {
+    console.log("Room " + room + " joined by a user.");
+  })
+
+  socket.on('full', (room) => {
+    console.log("Room " + room + " is full.");
+  })
 
   // Event handlers for call establishment signaling messages
   // --------------------------------------------------------
-  // *** TODO ***: use the 'socket.on' method to create signaling message handlers:
-  // new_peer --> handle_new_peer
-  // invite --> handle_invite
-  // ok --> handle_ok
-  // ice_candidate --> handle_remote_icecandidate
-  // bye --> hangUp
+  socket.on('new_peer', (room) => {
+    handle_new_peer(room);
+  })
 
+  socket.on('invite', (offer) => {
+    handle_invite(offer);
+  })
+
+  socket.on('ok', (answer) => {
+    handle_ok(answer);
+  })
+
+  socket.on('ice_candidate', (candidate) => {
+    handle_remote_icecandidate(candidate);
+  })
+
+  socket.on('bye', (room) => {
+    hangUp();
+    console.log("Call finished in room " + room + " finished.")
+  })
 }
 
 // --------------------------------------------------------------------------
