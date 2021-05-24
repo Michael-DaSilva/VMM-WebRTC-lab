@@ -150,9 +150,8 @@ async function handle_new_peer(room){
   console.log('Peer has joined room: ' + room + '. I am the Caller.');
   create_datachannel(peerConnection); // MUST BE CALLED BEFORE createOffer
 
-  // *** TODO ***: use createOffer (with await) generate an SDP offer for peerConnection
-  // *** TODO ***: use setLocalDescription (with await) to add the offer to peerConnection
-  // *** TODO ***: send an 'invite' message with the offer to the peer.
+  const offer = await peerConnection.createOffer();
+  await peerConnection.setLocalDescription(offer);
   socket.emit('invite', offer); 
 }
 
@@ -161,11 +160,11 @@ async function handle_new_peer(room){
 // Set remote description and send back an Ok answer.
 async function handle_invite(offer) {
   console.log('Received Invite offer from Caller: ', offer);
-  // *** TODO ***: use setRemoteDescription (with await) to add the offer SDP to peerConnection 
-  // *** TODO ***: use createAnswer (with await) to generate an answer SDP
-  // *** TODO ***: use setLocalDescription (with await) to add the answer SDP to peerConnection
-  // *** TODO ***: send an 'ok' message with the answer to the peer.
-  socket.emit('ok', answer); 
+
+  await peerConnection.setRemoteDescription(offer);
+  var answer = await peerConnection.createAnswer();
+  await peerConnection.setLocalDescription(answer);
+  socket.emit('ok', answer);
 }
 
 // --------------------------------------------------------------------------
@@ -173,8 +172,7 @@ async function handle_invite(offer) {
 // Set remote description.
 async function handle_ok(answer) {
   console.log('Received OK answer from Callee: ', answer);
-  // *** TODO ***: use setRemoteDescription (with await) to add the answer SDP 
-  //               the peerConnection
+  await peerConnection.setRemoteDescription(answer);
 }
 
 // ==========================================================================
