@@ -150,7 +150,7 @@ async function handle_new_peer(room){
   console.log('Peer has joined room: ' + room + '. I am the Caller.');
   create_datachannel(peerConnection); // MUST BE CALLED BEFORE createOffer
 
-  const offer = await peerConnection.createOffer();
+  var offer = await peerConnection.createOffer();
   await peerConnection.setLocalDescription(offer);
   socket.emit('invite', offer); 
 }
@@ -205,8 +205,7 @@ async function handle_remote_icecandidate(candidate) {
 // Show the remote track video on the web page.
 function handle_remote_track(event) {
   console.log('Received remote track: ', event);
-  // *** TODO ***: get the first stream of the event and show it in remoteVideo
-  //document.getElementById('remoteVideo').srcObject = ...
+  document.getElementById('remoteVideo').srcObject = event.stream[0];
 }
 
 // ==========================================================================
