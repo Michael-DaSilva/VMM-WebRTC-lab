@@ -184,8 +184,9 @@ async function handle_ok(answer) {
 // Send it to the peer via the server.
 async function handle_local_icecandidate(event) {
   console.log('Received local ICE candidate: ', event);
-  // *** TODO ***: check if there is a new ICE candidate.
-  // *** TODO ***: if yes, send a 'ice_candidate' message with the candidate to the peer
+  if(event.candidate){
+    socket.emit('ice_candidate', event.candidate);
+  }
 }
 
 // --------------------------------------------------------------------------
