@@ -59,26 +59,24 @@ def handle_p2pmessage(msg_type, content):
     print(f"Received {msg_type} message: {content} from user: {user_id} in room {room_name}")
     emit(msg_type, content, broadcast=True, include_self=False)
 
-
-# *** TODO ***: Create a message handler for 'invite' messages 
 @socketio.on('invite')
-def handle_invite(room_name):
+def handle_invite(content):
+    handle_p2pmessage('invite', content)
 
-# *** TODO ***: Create a message handler for 'ok' messages 
 @socketio.on('ok')
-def handle_ok(room_name):
+def handle_ok(content):
+    handle_p2pmessage('ok', content)
 
-# *** TODO ***: Create a message handler for 'ice_candidate' messages 
 @socketio.on('ice_candidate')
-def handle_bye(room_name):
-    
+def handle_bye(content):
+    handle_p2pmessage('ice_candidate', content)
 
 @socketio.on('bye')
 def handle_bye(room_name):
-    # *** TODO ***: Get the user_id from the request variable 
-    # *** TODO ***: Use leave_room to remove the sender from the SocketIO room
-    # *** TODO ***: Remove the user from rooms_db
-    # *** TODO ***: Forward the 'bye' message using p2p_message
+    user_id = request.sid
+    leave_room(room_name)
+    rooms_db.pop(user_id)
+    handle_p2pmessage('bye', room_name)
     pass
 
 # ===========================================================================

@@ -70,38 +70,37 @@ function add_signaling_handlers(socket) {
   // --------------------------------------------------------------
   socket.on('created', (room) => {
     console.log("Room " + room + " created.");
-  })
+  });
 
   socket.on('joined', (room) => {
     console.log("Room " + room + " joined by a user.");
-  })
+  });
 
   socket.on('full', (room) => {
     console.log("Room " + room + " is full.");
-  })
+  });
 
   // Event handlers for call establishment signaling messages
   // --------------------------------------------------------
   socket.on('new_peer', (room) => {
     handle_new_peer(room);
-  })
+  });
 
   socket.on('invite', (offer) => {
     handle_invite(offer);
-  })
+  });
 
   socket.on('ok', (answer) => {
     handle_ok(answer);
-  })
+  });
 
   socket.on('ice_candidate', (candidate) => {
     handle_remote_icecandidate(candidate);
-  })
+  });
 
-  socket.on('bye', (room) => {
+  socket.on('bye', () => {
     hangUp();
-    console.log("Call finished in room " + room + " finished.");
-  })
+  });
 }
 
 // --------------------------------------------------------------------------
@@ -122,7 +121,7 @@ function call_room(socket) {
 // Create a new RTCPeerConnection and connect local stream
 function create_peerconnection(localStream) {
   const pcConfiguration = {'iceServers': [{'urls': 'stun:stun.l.google.com:19302'}]}
-  var pc = new RTCPeerConnection(pcConfiguration);
+  var pc = new RTCPeerConnection([pcConfiguration]);
 
   localStream.getTracks().forEach(track => {
     pc.addTrack(track, localStream);
@@ -135,17 +134,9 @@ function create_peerconnection(localStream) {
 // Set the event handlers on the peerConnection. 
 // This function is called by the call function all on top of the file.
 function add_peerconnection_handlers(peerConnection) {
-  peerConnection.on('onicecandidate', (event) =>{
-    handle_local_icecandidate(event);
-  });
-
-  peerConnection.on('ontrack', (event) => {
-    handle_remote_track(event);
-  });
-
-  peerConnection.on('ondatachannel', (event) => {
-    handle_remote_datachannel(event);
-  });
+  peerConnection.onicecandidate = event => handle_local_icecandidate(event);
+  peerConnection.ontrack = event => handle_remote_track(event);
+  peerConnection.ondatachannel = event => handle_remote_datachannel(event);
 }
 
 // ==========================================================================
