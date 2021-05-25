@@ -269,16 +269,26 @@ function hangUp() {
   var localVideo = document.getElementById('localVideo');
   var remoteVideo = document.getElementById('remoteVideo');
   
-  localVideo.srcObject.getTracks().forEach(track => track.stop());
-  remoteVideo.srcObject.getTracks().forEach(track => track.stop());
-  localVideo.srcObject = null;
+  if(remoteVideo.srcObject){
+    remoteVideo.srcObject.getTracks().forEach(track => track.stop());
+  }
+
+  if(localVideo.srcObject){
+    localVideo.srcObject.getTracks().forEach(track => track.stop());
+  }
+
   remoteVideo.srcObject = null;
+  localVideo.srcObject = null;
   
-  peerConnection.close();
-  peerConnection = null;
+  if(peerConnection){
+    peerConnection.close();
+    peerConnection = null;
+  }
   
-  dataChannel.close();
-  dataChannel = null;
+  if(dataChannel){
+    dataChannel.close();
+    dataChannel = null;
+  }
 
   document.getElementById('dataChannelOutput').value += '*** Channel is closed ***\n';
 }

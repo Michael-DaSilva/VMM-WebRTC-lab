@@ -75,8 +75,13 @@ def handle_bye(content):
 def handle_bye(room_name):
     user_id = request.sid
     leave_room(room_name)
-    rooms_db.pop(user_id)
-    handle_p2pmessage('bye', room_name)
+
+    if(rooms_db.get(user_id) == room_name):
+        del rooms_db[user_id]
+
+    if(list(rooms_db.values()).count(room_name) > 0):
+        handle_p2pmessage('bye', room_name)
+        
     pass
 
 # ===========================================================================
