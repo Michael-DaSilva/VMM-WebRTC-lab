@@ -268,19 +268,28 @@ function hangUp() {
   // Switch off the local stream by stopping all tracks of the local stream
   var localVideo = document.getElementById('localVideo');
   var remoteVideo = document.getElementById('remoteVideo');
-  
-  if(remoteVideo.srcObject){
-    remoteVideo.srcObject.getTracks().forEach(track => track.stop());
-  }
-
-  if(localVideo.srcObject){
-    localVideo.srcObject.getTracks().forEach(track => track.stop());
-  }
 
   remoteVideo.srcObject = null;
   localVideo.srcObject = null;
   
   if(peerConnection){
+    peerConnection.ontrack = null;
+    peerConnection.onremovetrack = null;
+    peerConnection.onremovestream = null;
+    peerConnection.onicecandidate = null;
+    peerConnection.oniceconnectionstatechange = null;
+    peerConnection.onsignalingstatechange = null;
+    peerConnection.onicegatheringstatechange = null;
+    peerConnection.onnegotiationneeded = null;
+    
+    if(remoteVideo.srcObject){
+      remoteVideo.srcObject.getTracks().forEach(track => track.stop());
+    }
+  
+    if(localVideo.srcObject){
+      localVideo.srcObject.getTracks().forEach(track => track.stop());
+    }
+
     peerConnection.close();
     peerConnection = null;
   }
@@ -289,6 +298,11 @@ function hangUp() {
     dataChannel.close();
     dataChannel = null;
   }
+
+  remoteVideo.removeAttribute("src");
+  remoteVideo.removeAttribute("srcObject");
+  localVideo.removeAttribute("src");
+  localVideo.removeAttribute("srcObject");
 
   document.getElementById('dataChannelOutput').value += '*** Channel is closed ***\n';
 }

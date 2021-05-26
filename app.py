@@ -41,20 +41,20 @@ def handle_join(room_name):
         print(f'Received join from user: {user_id} for NEW room: {room_name}.')
         rooms_db[user_id] = room_name
         join_room(room_name)
-        emit("created", room_name)
+        emit('created', room_name)
     elif members == 1:
         print(f'Received join from user: {user_id} for EXISTING room: {room_name}.')
         rooms_db[user_id] = room_name
         join_room(room_name)
-        emit("joined", room_name)
-        emit("new_peer", room_name, broadcast=True, include_self=False)
+        emit('joined', room_name)
+        emit('new_peer', room_name, broadcast=True, include_self=False)
     else:
         print(f'Refusing join from user: {user_id} for FULL room: {room_name}.')
-        emit("full", room_name)
+        emit('full', room_name)
 
 def handle_p2pmessage(msg_type, content):
     user_id = request.sid
-    room_name = rooms_db[user_id]
+    room_name = rooms_db.get(user_id)
 
     print(f"Received {msg_type} message: {content} from user: {user_id} in room {room_name}")
     emit(msg_type, content, broadcast=True, include_self=False)
@@ -68,7 +68,7 @@ def handle_ok(content):
     handle_p2pmessage('ok', content)
 
 @socketio.on('ice_candidate')
-def handle_bye(content):
+def handle_icecandidate(content):
     handle_p2pmessage('ice_candidate', content)
 
 @socketio.on('bye')
@@ -81,7 +81,7 @@ def handle_bye(room_name):
 
     if(list(rooms_db.values()).count(room_name) > 0):
         handle_p2pmessage('bye', room_name)
-        
+
     pass
 
 # ===========================================================================
