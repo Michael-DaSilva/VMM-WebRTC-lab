@@ -298,10 +298,6 @@ function hangUp() {
     dataChannel = null;
   }
 
-  if(socket){
-    
-  }
-
   document.getElementById('dataChannelOutput').value += '*** Channel is closed ***\n';
 }
 
