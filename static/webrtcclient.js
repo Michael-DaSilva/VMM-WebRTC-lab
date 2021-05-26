@@ -268,9 +268,6 @@ function hangUp() {
   // Switch off the local stream by stopping all tracks of the local stream
   var localVideo = document.getElementById('localVideo');
   var remoteVideo = document.getElementById('remoteVideo');
-
-  remoteVideo.srcObject = null;
-  localVideo.srcObject = null;
   
   if(peerConnection){
     peerConnection.ontrack = null;
@@ -284,10 +281,12 @@ function hangUp() {
     
     if(remoteVideo.srcObject){
       remoteVideo.srcObject.getTracks().forEach(track => track.stop());
+      remoteVideo.srcObject = null;
     }
   
     if(localVideo.srcObject){
       localVideo.srcObject.getTracks().forEach(track => track.stop());
+      localVideo.srcObject = null;
     }
 
     peerConnection.close();
@@ -299,10 +298,9 @@ function hangUp() {
     dataChannel = null;
   }
 
-  remoteVideo.removeAttribute("src");
-  remoteVideo.removeAttribute("srcObject");
-  localVideo.removeAttribute("src");
-  localVideo.removeAttribute("srcObject");
+  if(socket){
+    
+  }
 
   document.getElementById('dataChannelOutput').value += '*** Channel is closed ***\n';
 }
